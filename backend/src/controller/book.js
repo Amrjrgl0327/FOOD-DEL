@@ -1,6 +1,7 @@
 import { Book } from "../models/bookSchema.js";
 
 export const createBook = async (req, res) => {
+  console.log("book", res.body);
   try {
     const body = req.body;
     const book = {
@@ -26,6 +27,7 @@ export const getBooks = async (req, res) => {
 };
 
 export const deleteBook = async (req, res) => {
+  console.log("req", req.body);
   try {
     await Book.findByIdAndDelete(req.body.id);
 

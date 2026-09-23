@@ -3,12 +3,13 @@ import { configDotenv } from "dotenv";
 configDotenv();
 
 export const connectDB = async () => {
-  const connectionString = process.env.connectionString;
-  console.log("eniig avbal duus", connectionString);
+  const connectionString = process.env.MONGO_DB;
+
   try {
     await mongoose.connect(connectionString);
-    console.log("db connection success");
+    console.log("Database connected successfully");
   } catch (error) {
-    console.log("db error", error);
+    console.error("Database connection error:", error.message);
+    throw error;
   }
 };
