@@ -3,9 +3,23 @@ import {
   loginController,
   signUpController,
 } from "../../controller/auth/auth.js";
-console.log("router");
+import {
+  validateEmail,
+  checkIfUserExist,
+  validateEmailAndPassword,
+} from "../../middleware/auth-middleware.js";
+
 export const authRouter = Router();
-console.log("hello router");
-authRouter.post("/sign-up", signUpController);
-authRouter.post("/login", loginController);
-console.log("successs");
+
+authRouter.post(
+  "/sign-up",
+  validateEmailAndPassword,
+  validateEmail,
+  signUpController,
+);
+authRouter.post(
+  "/login",
+  validateEmailAndPassword,
+  checkIfUserExist,
+  loginController,
+);
