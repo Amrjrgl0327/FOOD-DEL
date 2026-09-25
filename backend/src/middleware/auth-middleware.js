@@ -8,7 +8,6 @@ export const validateEmailAndPassword = (req, res, next) => {
     next();
   }
 };
-
 export const checkIfUserExist = async (req, res, next) => {
   const { email } = req.body;
 
@@ -17,6 +16,7 @@ export const checkIfUserExist = async (req, res, next) => {
   if (!user) {
     res.status(401).json({ message: "user not found" });
   } else {
+    req.user = user;
     next();
   }
 };

@@ -2,10 +2,10 @@ import mongoose, { Schema } from "mongoose";
 
 const userSchema = new Schema(
   {
-    email: { type: String },
-    password: { type: String },
-    // phoneNumber: { type: String },
-    // role: { type: String, enum: ["user", "admin"], default: "user" },
+    email: { type: String, required: true },
+    password: { type: String, required: true },
+    phoneNumber: { type: String },
+    role: { type: String, enum: ["user", "admin"], default: "user" },
   },
   {
     timestamp: true,
