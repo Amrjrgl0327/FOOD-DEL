@@ -1,0 +1,15 @@
+import axios from "axios";
+
+export const server = axios.create({
+  baseURL: "http://localhost:8000",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+server.interceptors.request.use((congif) => {
+  const token =
+    typeof window !== "undefined" ? localStorage.getItem("token") : null;
+  congif.headers.Authorization = token ? `Bearer ${token}` : null;
+  return congif;
+});

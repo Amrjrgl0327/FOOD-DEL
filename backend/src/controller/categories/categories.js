@@ -1,4 +1,4 @@
-import { Category } from "../../models/categorySchema.js"; // өөрийн model-ынхоо замыг тааруулна
+//import { Category } from "../../models/categorySchema.js";
 
 export const getCategories = async (req, res) => {
   try {
