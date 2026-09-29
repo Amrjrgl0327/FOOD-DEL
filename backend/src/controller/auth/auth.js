@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 
 const SALT_ROUNDS = 10;
 
-const JWT_SECRET = "Amka";
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const token = jwt.sign({ email: "email@yahoo.com" }, JWT_SECRET, {
   expiresIn: "7d",
@@ -21,13 +21,13 @@ const publicUser = (user) => {
 };
 
 const createToken = (user) => {
-  return jwt.sign({ email: "user.email", role: user.role }, JWT_SECRET, {
+  return jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, {
     expiresIn: "7d",
   });
 };
 
 export const signUpController = async (req, res) => {
-  const { email, password, phoneNumber, role } = req.body;
+  const { email, password, phoneNumber, address, role } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
 
@@ -35,12 +35,15 @@ export const signUpController = async (req, res) => {
       email,
       password: hashedPassword,
       phoneNumber,
+      address,
       role,
     });
 
     const token = createToken(user);
 
-    res.status(200).json({ message: "User Created", user: user, token });
+    res
+      .status(200)
+      .json({ message: "User Created", user: publicUser(user), token });
   } catch (error) {
     res.status(500).json({ message: "Failed to create user", error: error });
   }
@@ -54,14 +57,14 @@ export const loginController = async (req, res) => {
     const isPassMatching = await bcrypt.compare(password, user.password);
 
     if (!isPassMatching) {
-      res.status(401).json({ message: "Wrong password" });
+      res.status(401).json({ message: "Email or password is wrong" });
     }
 
     const token = createToken(user);
 
     res
       .status(200)
-      .json({ message: "Successfully login", user: publicUser(user) });
+      .json({ message: "Successfully login", user: publicUser(user), token });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Failed to login user", error: error });

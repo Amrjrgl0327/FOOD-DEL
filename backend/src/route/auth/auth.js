@@ -8,6 +8,8 @@ import {
   checkIfUserExist,
   validateEmailAndPassword,
 } from "../../middleware/auth-middleware.js";
+import { requireToken } from "../../middleware/require-token.js";
+import { requireAdmin } from "../../middleware/require-admin.js";
 
 export const authRouter = Router();
 
@@ -23,3 +25,7 @@ authRouter.post(
   checkIfUserExist,
   loginController,
 );
+
+authRouter.get("/admin/dashboard", requireToken, requireAdmin, (res, req) => {
+  res.statusCode(200).json({ message: "Welcome admin" });
+});

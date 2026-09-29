@@ -1,4 +1,6 @@
 "use client";
+
+import { server } from "@/app/_api/api";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -23,13 +25,12 @@ export default function Login() {
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [serverError, setServerError] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInput = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-
+    const { name, value } = event.target;
     setFormValues({ ...formValues, [name]: value });
   };
 
@@ -38,7 +39,7 @@ export default function Login() {
       setEmailError("Email is required");
       return true;
     } else if (!email.includes("@")) {
-      setEmailError("required valid email");
+      setEmailError("Required valid email");
       return true;
     } else {
       setEmailError("");
@@ -46,12 +47,9 @@ export default function Login() {
     }
   };
 
-  const validatePasswordInput = (password) => {
+  const validatePassword = (password) => {
     if (password === "") {
-      setPasswordError("password is required");
-      return true;
-    } else if (password.length <= 8) {
-      setPasswordError("Password length must be above 8");
+      setPasswordError("Password is required");
       return true;
     } else {
       setPasswordError("");
@@ -59,77 +57,98 @@ export default function Login() {
     }
   };
 
-  const handleSubmit = async () => {
-    const emailError = validateEmail(formValues.email);
-    const passwordError = validatePasswordInput(formValues.password);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setServerError("");
 
-    if (!emailError && !passwordError) {
-      setIsSubmitting(true);
-      try {
-        console.log("we can call api now");
-        const response = await server.post("/auth/login", {
-          email: formValues.email,
-          password: formValues.password,
-        });
+    const hasEmailError = validateEmail(formValues.email);
+    const hasPasswordError = validatePassword(formValues.password);
 
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-        localStorage.setItem("token", response.data.token);
+    if (hasEmailError || hasPasswordError) return;
 
+    setIsSubmitting(true);
+    try {
+      const response = await server.post("/auth/login", {
+        email: formValues.email,
+        password: formValues.password,
+      });
+
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      localStorage.setItem("token", response.data.token);
+
+      if (response.data.user.role === "ADMIN") {
+        router.push("/admin/dishes");
+      } else {
         router.push("/");
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setIsSubmitting(false);
       }
+    } catch (err) {
+      setServerError(
+        err?.response?.data?.message || "Email or Password is wrong",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
   return (
     <div className="min-h-screen flex items-center justify-center">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>Log in</CardTitle>
+          <CardTitle>Log In</CardTitle>
         </CardHeader>
-        <CardContent>
-          <form>
+        <form onSubmit={handleSubmit}>
+          <CardContent>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
+                  id="email"
                   placeholder="m@example.com"
-                  value={formValues.email}
                   name="email"
+                  value={formValues.email}
                   onChange={handleInput}
                 />
+                {emailError && <div style={{ color: "red" }}>{emailError}</div>}
               </div>
+
               <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                </div>
+                <Label htmlFor="password">Password</Label>
                 <Input
+                  id="password"
                   placeholder="password"
                   name="password"
                   type="password"
                   value={formValues.password}
                   onChange={handleInput}
                 />
+                {passwordError && (
+                  <div style={{ color: "red" }}>{passwordError}</div>
+                )}
               </div>
-            </div>
-          </form>
-        </CardContent>
-        <CardFooter className="flex-col gap-2">
-          <Button onClick={handleSubmit} disabled={isSubmitting}>
-            {isSubmitting ? "Submitting" : "login"}
-          </Button>
 
-          <div className="flex items-center justify-center gap-1">
-            <p>No account?</p>
-            <CardAction>
-              <Button variant="link" className="h-auto p-0">
-                Sign Up
-              </Button>
-            </CardAction>
-          </div>
-        </CardFooter>
+              {serverError && <div style={{ color: "red" }}>{serverError}</div>}
+            </div>
+          </CardContent>
+          <CardFooter className="flex-col gap-2 mt-4">
+            <Button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Logging in..." : "Log in"}
+            </Button>
+
+            <div className="flex items-center justify-center gap-1">
+              <p>Don't have an account?</p>
+              <CardAction>
+                <Button
+                  type="button"
+                  variant="link"
+                  className="h-auto p-0"
+                  onClick={() => router.push("/sign-up")}
+                >
+                  Sign Up
+                </Button>
+              </CardAction>
+            </div>
+          </CardFooter>
+        </form>
       </Card>
     </div>
   );

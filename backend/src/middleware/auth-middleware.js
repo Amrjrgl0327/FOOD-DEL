@@ -14,7 +14,7 @@ export const checkIfUserExist = async (req, res, next) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    res.status(401).json({ message: "user not found" });
+    return res.status(401).json({ message: "Email or password is wrong" });
   } else {
     req.user = user;
     next();

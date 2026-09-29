@@ -1,4 +1,4 @@
-//import { Category } from "../../models/categorySchema.js";
+import { Category } from "../../models/categorySchema.js";
 
 export const getCategories = async (req, res) => {
   try {
