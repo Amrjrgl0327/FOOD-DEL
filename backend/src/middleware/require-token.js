@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export const requireToken = async (req, res, next) => {
-  const token = req.headers.authorization?.split("")[1] || null;
+  const token = req.headers.authorization?.split(" ")[1] || null;
 
   if (!token) {
     res.status(400).json({ message: "Token required" });

@@ -3,6 +3,7 @@ import { connectDB } from "./database/db.js";
 import { authRouter } from "./route/auth/auth.js";
 import cors from "cors";
 import { categoriesRouter } from "./route/categories/categories.js";
+import { foodRouter } from "./route/food/food-router.js";
 
 const app = express();
 const port = 8000;
@@ -17,6 +18,7 @@ connectDB();
 app.use(express.json());
 app.use("/auth", authRouter);
 app.use("/categories", categoriesRouter);
+app.use("/food", foodRouter);
 
 app.listen(port, () => {
   console.log("server has started successfully on:", port);

@@ -12,6 +12,6 @@ export const categoriesRouter = Router();
 
 categoriesRouter
   .get("/", getCategories)
-  .post("/", createCategories, requireToken, requireAdmin, createCategories)
-  .put("/", updateCategories, requireToken, requireAdmin, updateCategories)
-  .delete("/", deleteCategories, requireToken, requireAdmin, deleteCategories);
+  .post("/", requireToken, requireAdmin, createCategories)
+  .put("/:id", requireToken, requireAdmin, updateCategories)
+  .delete("/:id", requireToken, requireAdmin, deleteCategories);
