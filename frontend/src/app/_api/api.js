@@ -7,9 +7,10 @@ export const server = axios.create({
   },
 });
 
-server.interceptors.request.use((congif) => {
+server.interceptors.request.use((config) => {
   const token =
     typeof window !== "undefined" ? localStorage.getItem("token") : null;
-  congif.headers.Authorization = token ? `Bearer ${token}` : null;
-  return congif;
+  config.headers.Authorization = token ? `Bearer ${token}` : null;
+
+  return config;
 });

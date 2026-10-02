@@ -14,7 +14,7 @@ export default function Home() {
       return;
     }
 
-    if (user.role === "admin") {
+    if (user.role === "ADMIN") {
       router.push("/admin");
     }
   }, []);
