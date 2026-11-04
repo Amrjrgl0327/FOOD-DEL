@@ -1,16 +1,18 @@
 export default function DishCard({ food }) {
   return (
-    <div className="rounded-xl border p-3">
-      <img
-        src={food.imgage || "/placeholder.png"}
-        alt={food.name}
-        className="w-full h-40 object-cover rounded-lg"
-      />
-      <div className="flex justify-between mt-2">
-        <p className="font-medium">{food.name}</p>
-        <p>${food.price}</p>
+    <div className="border rounded-xl p-3 flex flex-col gap-2">
+      <div className="relative">
+        <img
+          src={food.image || "/placeholder.png"}
+          alt={food.name}
+          className="w-full h-32 object-cover rounded-xl"
+        />
       </div>
-      <p className="text-sm text-gray-500">{food.description}</p>
+      <div className="flex justify-between items-center">
+        <span className="text-red-500 font-medium">{food.name}</span>
+        <span className="text-sm">${food.price}</span>
+      </div>
+      <p className="text-xs text-gray-600">{food.ingredients}</p>
     </div>
   );
 }

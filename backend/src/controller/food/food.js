@@ -11,11 +11,11 @@ export const getFoods = async (req, res) => {
 
 export const createFood = async (req, res) => {
   try {
-    const { name, price, description, image, category } = req.body;
+    const { name, price, ingredients, image, category } = req.body;
     const food = await Food.create({
       name,
       price,
-      description,
+      ingredients,
       image,
       category,
     });
